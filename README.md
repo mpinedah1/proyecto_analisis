@@ -4,8 +4,18 @@
 
 Prerrequisitos, instalar los siguientes paquetes:
 
- - Node js ([tutorial](https://www.youtube.com/watch?v=2p-mM1uybaQ))
- - Yarn ([Tutorial](https://www.youtube.com/watch?v=OfrKqymH0Rk))
+ - [Node js](https://nodejs.org/)  => ([tutorial](https://www.youtube.com/watch?v=2p-mM1uybaQ))
+ - [Git](https://git-scm.com/download/win)
+ - [Yarn](https://yarnpkg.com/) => ([Tutorial](https://www.youtube.com/watch?v=OfrKqymH0Rk))
+
+
+ Como primer paso hay que clonar el repositorio:
+
+```
+git clone https://github.com/alexlopz/nomina-umg.git
+```
+
+Luego se ejecunta los siguientes comandos:
 
 > Los siguientes comandos se ejecunta en la carpeta donde esta el proyecto
 
