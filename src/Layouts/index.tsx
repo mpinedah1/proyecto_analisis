@@ -27,11 +27,6 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
   const sidebarRef = useRef<SidebarRefObject>(null);
   const router = useRouter();
   const menuRef = useRef<MenuRefObject>(null);
-  const [seeHeader, setSeeHeader] = useState(true);
-
-  const getState = (state?: 'hidden' | 'visible' | 'compacted' | 'expanded') => {
-    setSeeHeader(state !== 'compacted');
-  };
 
   const changeTheme = (newTheme: DefaultTheme['name']) => {
     setTheme(newTheme);
@@ -69,14 +64,7 @@ const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
             )}
             <LayoutContainer>
               {!authLayout && (
-                <Sidebar
-                  getState={getState}
-                  ref={sidebarRef}
-                  property="start"
-                  containerFixed
-                  responsive
-                  className="menu-sidebar"
-                >
+                <Sidebar ref={sidebarRef} property="start" containerFixed responsive className="menu-sidebar">
                   <SidebarBody>
                     <Menu
                       nextJs

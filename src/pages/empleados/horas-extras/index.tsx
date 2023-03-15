@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader, Col, Container, Row } from '@paljs/ui';
-import DeduccionesForm from 'components/Deducciones';
+import HorasExtrasForm from 'components/Empleados/horas';
 import Tabla from 'components/Tabla';
 import Layout from 'Layouts';
 
@@ -10,13 +10,13 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'Nombre',
-    selector: (row: { nombre: any }) => row.nombre,
+    name: 'ID Autorizacion',
+    selector: (row: { id_autorizacion: any }) => row.id_autorizacion,
     sortable: true,
   },
   {
-    name: 'Porcentaje',
-    selector: (row: { porcentaje: any }) => row.porcentaje,
+    name: 'Fecha',
+    selector: (row: { fecha: any }) => row.fecha,
     sortable: true,
   },
   {
@@ -29,34 +29,25 @@ const columns = [
 const data = [
   {
     id: 1,
-    nombre: 'IGSS',
-    porcentaje: '11',
-    descripcion: 'Seguro Social',
-  },
-  {
-    id: 2,
-    nombre: 'IGSS',
-    porcentaje: '11',
-    descripcion: 'Seguro Social',
-  },
-  {
-    id: 3,
-    nombre: 'IGSS',
-    porcentaje: '11',
-    descripcion: 'Seguro Social',
+    id_autorizacion: 123,
+    fecha: '10/10/2023',
+    descripcion: 'Lorem ipsum',
   },
 ];
 
-const Deducciones = () => {
+const HorasExtras = () => {
+  const miFuncion = () => {
+    console.log('hola mundo');
+  };
   return (
-    <Layout title={'Deducciones'}>
+    <Layout title={'Horas Extras'}>
       <Row>
         <Col>
           <Container>
             <Card status="Primary">
-              <CardHeader>Ingresar deducciones</CardHeader>
+              <CardHeader>Ingresar Horas Extras</CardHeader>
               <CardBody>
-                <DeduccionesForm />
+                <HorasExtrasForm handleSubmit={miFuncion} />
               </CardBody>
             </Card>
           </Container>
@@ -66,8 +57,8 @@ const Deducciones = () => {
       <Row>
         <Col>
           <Container>
-            <Card status="Success">
-              <CardHeader>Listado de deducciones</CardHeader>
+            <Card status="Primary">
+              <CardHeader>Listado Horas Extras</CardHeader>
               <CardBody>
                 <Tabla columns={columns} data={data} />
               </CardBody>
@@ -79,4 +70,4 @@ const Deducciones = () => {
   );
 };
 
-export default Deducciones;
+export default HorasExtras;

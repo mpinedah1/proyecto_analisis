@@ -12,7 +12,17 @@ const items: MenuItemType[] = [
     link: { href: '/deducciones' },
   },
   {
-    title: 'Auth',
+    title: 'Empleados',
+    icon: { name: 'arrowhead-right-outline' },
+    children: [
+      {
+        title: 'Horas Extras',
+        link: { href: '/empleados/horas-extras' },
+      },
+    ],
+  },
+  {
+    title: 'Test',
     icon: { name: 'lock-outline' },
     children: [
       {
