@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader, Col, Container, Row } from '@paljs/ui';
-import DeduccionesForm from 'components/Deducciones';
+import ComisionForm from 'components/Catalogos/Comisiones';
 import Tabla from 'components/Tabla';
 import Layout from 'Layouts';
 
@@ -15,11 +15,6 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'Porcentaje',
-    selector: (row: { porcentaje: any }) => row.porcentaje,
-    sortable: true,
-  },
-  {
     name: 'Descripcion',
     selector: (row: { descripcion: any }) => row.descripcion,
     sortable: true,
@@ -29,34 +24,27 @@ const columns = [
 const data = [
   {
     id: 1,
-    nombre: 'IGSS',
-    porcentaje: '11',
-    descripcion: 'Seguro Social',
+    nombre: 'Venta de Verano',
+    descripcion: 'Lorem ipsum',
   },
   {
     id: 2,
-    nombre: 'IGSS',
-    porcentaje: '11',
-    descripcion: 'Seguro Social',
-  },
-  {
-    id: 3,
-    nombre: 'IGSS',
-    porcentaje: '11',
-    descripcion: 'Seguro Social',
+    nombre: 'Afiliado',
+    descripcion: 'Lorem ipsum',
   },
 ];
 
-const Deducciones = () => {
+const TiposComisiones = () => {
   return (
     <Layout title={'Deducciones'}>
       <Row>
         <Col>
           <Container>
+            <h1>Tipo de comisiones</h1>
             <Card status="Primary">
-              <CardHeader>Ingresar deducciones</CardHeader>
+              <CardHeader>Ingresar comision</CardHeader>
               <CardBody>
-                <DeduccionesForm />
+                <ComisionForm />
               </CardBody>
             </Card>
           </Container>
@@ -67,7 +55,7 @@ const Deducciones = () => {
         <Col>
           <Container>
             <Card status="Success">
-              <CardHeader>Listado de deducciones</CardHeader>
+              <CardHeader>Listado de comisiones</CardHeader>
               <CardBody>
                 <Tabla columns={columns} data={data} />
               </CardBody>
@@ -79,4 +67,4 @@ const Deducciones = () => {
   );
 };
 
-export default Deducciones;
+export default TiposComisiones;

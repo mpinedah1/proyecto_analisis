@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader, Col, Container, Row } from '@paljs/ui';
-import HorasExtrasForm from 'components/Empleados/horas';
+import PrestamosForm from 'components/Empleados/prestamos';
 import Tabla from 'components/Tabla';
 import Layout from 'Layouts';
 
@@ -10,18 +10,18 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'ID Autorizacion',
-    selector: (row: { id_autorizacion: any }) => row.id_autorizacion,
+    name: 'Entidad',
+    selector: (row: { entidad: any }) => row.entidad,
     sortable: true,
   },
   {
-    name: 'Fecha',
-    selector: (row: { fecha: any }) => row.fecha,
+    name: 'Cuotas',
+    selector: (row: { cuotas: any }) => row.cuotas,
     sortable: true,
   },
   {
-    name: 'Descripcion',
-    selector: (row: { descripcion: any }) => row.descripcion,
+    name: 'Monto',
+    selector: (row: { monto: any }) => row.monto,
     sortable: true,
   },
 ];
@@ -29,13 +29,19 @@ const columns = [
 const data = [
   {
     id: 1,
-    id_autorizacion: 123,
-    fecha: '10/10/2023',
-    descripcion: 'Lorem ipsum',
+    entidad: 'Banco Industrial',
+    cuotas: 12,
+    monto: 5000,
   },
 ];
 
-const HorasExtras = () => {
+const bancos = [
+  { value: 'bi', label: 'Banco Industrial' },
+  { value: 'banrural', label: 'Banrural' },
+  { value: 'bac', label: 'Bac' },
+];
+
+const Prestamos = () => {
   const miFuncion = () => {
     console.log('hola mundo');
   };
@@ -44,11 +50,11 @@ const HorasExtras = () => {
       <Row>
         <Col>
           <Container>
-            <h1>Horas Extras</h1>
+            <h1>Prestamos</h1>
             <Card status="Primary">
-              <CardHeader>Ingresar Horas Extras</CardHeader>
+              <CardHeader>Ingresar Prestaos</CardHeader>
               <CardBody>
-                <HorasExtrasForm handleSubmit={miFuncion} />
+                <PrestamosForm handleSubmit={miFuncion} bancos={bancos} />
               </CardBody>
             </Card>
           </Container>
@@ -59,7 +65,7 @@ const HorasExtras = () => {
         <Col>
           <Container>
             <Card status="Primary">
-              <CardHeader>Listado Horas Extras</CardHeader>
+              <CardHeader>Listado de Prestamos</CardHeader>
               <CardBody>
                 <Tabla columns={columns} data={data} />
               </CardBody>
@@ -71,4 +77,4 @@ const HorasExtras = () => {
   );
 };
 
-export default HorasExtras;
+export default Prestamos;

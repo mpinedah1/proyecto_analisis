@@ -7,9 +7,18 @@ const items: MenuItemType[] = [
     link: { href: '/dashboard' },
   },
   {
-    title: 'Deducciones',
+    title: 'Catalogos',
     icon: { name: 'arrowhead-right-outline' },
-    link: { href: '/deducciones' },
+    children: [
+      {
+        title: 'Deducciones',
+        link: { href: '/catalogos/deducciones' },
+      },
+      {
+        title: 'Tipos de Comisiones',
+        link: { href: '/catalogos/tipos-comisiones' },
+      },
+    ],
   },
   {
     title: 'Empleados',
@@ -18,6 +27,10 @@ const items: MenuItemType[] = [
       {
         title: 'Horas Extras',
         link: { href: '/empleados/horas-extras' },
+      },
+      {
+        title: 'Prestamos',
+        link: { href: '/empleados/prestamos' },
       },
     ],
   },
