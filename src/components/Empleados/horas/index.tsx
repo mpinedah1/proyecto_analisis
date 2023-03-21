@@ -17,6 +17,7 @@ const HorasExtrasForm: React.FC<IPlainObject> = ({ handleSubmit }) => {
           </InputWrap>
         </Col>
         <Col breakPoint={{ xs: 12, sm: 12 }}>
+          <label className="form-label">Fecha:</label>
           <InputWrap fullWidth size="Medium">
             <input type="date" placeholder="Fecha" />
           </InputWrap>
