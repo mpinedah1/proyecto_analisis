@@ -1,19 +1,24 @@
-import { Button, Col, Row } from '@paljs/ui';
+import { Button, Col, Row, Select } from '@paljs/ui';
 import { IPlainObject } from 'definitions/IPlainObjects';
-import { ButtonWrap, InputWrap } from './style';
+import { ButtonWrap, InputWrap, SelectWrap } from './style';
 
 const HorasExtrasForm: React.FC<IPlainObject> = ({ handleSubmit }) => {
   return (
     <form onSubmit={handleSubmit}>
       <Row>
-        <Col breakPoint={{ xs: 12, sm: 12 }}>
+        <Col breakPoint={{ xs: 12, sm: 6 }}>
+          <SelectWrap>
+            <Select options={[]} placeholder="Id Empleado" />
+          </SelectWrap>
+        </Col>
+        <Col breakPoint={{ xs: 12, sm: 6 }}>
           <InputWrap fullWidth size="Medium">
-            <input type="text" placeholder="Descripcion" />
+            <input type="number" placeholder="Id Autorizacion" />
           </InputWrap>
         </Col>
         <Col breakPoint={{ xs: 12, sm: 12 }}>
           <InputWrap fullWidth size="Medium">
-            <input type="number" placeholder="Id Autorizacion" />
+            <input type="text" placeholder="Descripcion" />
           </InputWrap>
         </Col>
         <Col breakPoint={{ xs: 12, sm: 12 }}>
