@@ -18,6 +18,22 @@ const items: MenuItemType[] = [
         title: 'Tipos de Comisiones',
         link: { href: '/catalogos/tipos-comisiones' },
       },
+      {
+        title: 'Puestos',
+        link: { href: '/catalogos/puestos' },
+      },
+      {
+        title: 'Marcaje',
+        link: { href: '/catalogos/marcaje' },
+      },
+      {
+        title: 'Departamento',
+        link: { href: '/catalogos/departamento' },
+      },
+      {
+        title: 'Pago',
+        link: { href: '/catalogos/pago' },
+      },
     ],
   },
   {
@@ -31,6 +47,10 @@ const items: MenuItemType[] = [
       {
         title: 'Prestamos',
         link: { href: '/empleados/prestamos' },
+      },
+      {
+        title: 'Usuario',
+        link: { href: '/empleados/usuario' },
       },
     ],
   },
