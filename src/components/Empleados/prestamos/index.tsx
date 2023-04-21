@@ -6,19 +6,18 @@ const PrestamosForm: React.FC<IPlainObject> = ({ handleSubmit, bancos }) => {
   return (
     <form onSubmit={handleSubmit}>
       <Row>
-        <Col breakPoint={{ xs: 12, sm: 4 }}>
-          {/* <InputWrap fullWidth size="Medium">
-            <input type="text" placeholder="Entidad" />
-            <Select options={bancos} placeholder="Entidad" />
-          </InputWrap> */}
+        <Col breakPoint={{ xs: 12, sm: 3 }}>
+          <Select options={bancos} placeholder="Id Empleado" />
+        </Col>
+        <Col breakPoint={{ xs: 12, sm: 3 }}>
           <Select options={bancos} placeholder="Entidad" />
         </Col>
-        <Col breakPoint={{ xs: 12, sm: 4 }}>
+        <Col breakPoint={{ xs: 12, sm: 3 }}>
           <InputWrap fullWidth size="Medium">
             <input type="number" placeholder="Cuotas" />
           </InputWrap>
         </Col>
-        <Col breakPoint={{ xs: 12, sm: 4 }}>
+        <Col breakPoint={{ xs: 12, sm: 3 }}>
           <InputWrap fullWidth size="Medium">
             <input type="number" placeholder="Monto" />
           </InputWrap>

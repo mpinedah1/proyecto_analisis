@@ -10,6 +10,11 @@ const columns = [
     sortable: true,
   },
   {
+    name: 'ID Empleado',
+    selector: (row: { id_empleado: any }) => row.id_empleado,
+    sortable: true,
+  },
+  {
     name: 'ID Autorizacion',
     selector: (row: { id_autorizacion: any }) => row.id_autorizacion,
     sortable: true,
@@ -29,6 +34,7 @@ const columns = [
 const data = [
   {
     id: 1,
+    id_empleado: 3,
     id_autorizacion: 123,
     fecha: '10/10/2023',
     descripcion: 'Lorem ipsum',

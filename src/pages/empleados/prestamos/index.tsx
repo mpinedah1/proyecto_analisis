@@ -10,6 +10,11 @@ const columns = [
     sortable: true,
   },
   {
+    name: 'Id Empleado',
+    selector: (row: { id_empleado: any }) => row.id_empleado,
+    sortable: true,
+  },
+  {
     name: 'Entidad',
     selector: (row: { entidad: any }) => row.entidad,
     sortable: true,
@@ -29,6 +34,7 @@ const columns = [
 const data = [
   {
     id: 1,
+    id_empleado: '2',
     entidad: 'Banco Industrial',
     cuotas: 12,
     monto: 5000,
@@ -52,7 +58,7 @@ const Prestamos = () => {
           <Container>
             <h1>Prestamos</h1>
             <Card status="Primary">
-              <CardHeader>Ingresar Prestaos</CardHeader>
+              <CardHeader>Ingresar Prestamos</CardHeader>
               <CardBody>
                 <PrestamosForm handleSubmit={miFuncion} bancos={bancos} />
               </CardBody>
