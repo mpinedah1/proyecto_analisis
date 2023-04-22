@@ -1,15 +1,14 @@
-import { Card, CardBody, CardHeader, Col, Container, Row } from '@paljs/ui';
+import { Button, Card, CardBody, CardHeader, Col, Container, Row } from '@paljs/ui';
 import HorasExtrasForm from 'components/Empleados/horas';
 import { IHoraExtra } from 'definitions/IHoraExtra';
 import Layout from 'Layouts';
 import { firestore } from 'utilities/firebase';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { IPlainObject } from 'definitions/IPlainObjects';
 import { useRouter } from 'next/router';
 import { Timestamp } from '@firebase/firestore';
 import { IEmpleado } from 'definitions/IEmpleado';
-import { async } from '@firebase/util';
 import TablaSelectable from 'components/TabaSelectable';
 
 const columns = [
@@ -19,7 +18,7 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'ID Empleado',
+    name: 'Empleado',
     selector: (row: { empleado: string }) => row.empleado,
     sortable: true,
   },
@@ -52,17 +51,27 @@ const HorasExtras: React.FC<IPlainObject> = ({ horas, empleados }) => {
     fecha: '',
     empleado: '',
   });
-  const [selectedRows, setSelectedRows] = useState(false);
-  const [toggledClearRows, setToggleClearRows] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [toggleCleared, setToggleCleared] = useState(false);
 
-  // const handleChangeRows = ({ tes }) => {
-  //   setSelectedRows(tes);
-  // };
+  const handleRowSelected = useCallback((state) => {
+    setSelectedRows(state.selectedRows);
+  }, []);
 
-  // Toggle the state so React Data Table changes to clearSelectedRows are triggered
-  const handleClearRows = () => {
-    setToggleClearRows(!toggledClearRows);
-  };
+  const contextActions = useMemo(() => {
+    const handleDelete = () => {
+      // if (window.confirm(`Are you sure you want to delete:\r ${selectedRows.map((r: any) => r.title)}?`)) {
+      // 	setToggleCleared(!toggleCleared);
+      // 	setData(differenceBy(data, selectedRows, 'title'));
+      // }
+    };
+
+    return (
+      <Button key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }}>
+        Delete
+      </Button>
+    );
+  }, [selectedRows, toggleCleared]);
 
   const router = useRouter();
 
@@ -125,7 +134,13 @@ const HorasExtras: React.FC<IPlainObject> = ({ horas, empleados }) => {
             <Card status="Success">
               <CardHeader>Listado Horas Extras</CardHeader>
               <CardBody>
-                <TablaSelectable columns={columns} data={horas} handleClearRows={handleClearRows} />
+                <TablaSelectable
+                  columns={columns}
+                  data={horas}
+                  onSelectedRowsChange={handleRowSelected}
+                  contextActions={contextActions}
+                  toggleCleared={toggleCleared}
+                />
               </CardBody>
             </Card>
           </Container>

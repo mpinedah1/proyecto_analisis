@@ -11,4 +11,8 @@ const ButtonWrap = styled.div<{ align: string }>`
   padding-top: 20px;
 `;
 
-export { InputWrap, ButtonWrap };
+const SelectWrap = styled.div`
+  margin-bottom: 10px;
+`;
+
+export { InputWrap, ButtonWrap, SelectWrap };
