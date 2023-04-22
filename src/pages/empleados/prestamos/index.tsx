@@ -1,60 +1,17 @@
-import { Card, CardBody, CardHeader, Col, Container, Row } from '@paljs/ui';
+import { Button, Card, CardBody, CardHeader, Col, Container, Row } from '@paljs/ui';
 import PrestamosForm from 'components/Empleados/prestamos';
 import Tabla from 'components/Tabla';
 import Layout from 'Layouts';
 
 //firebase
 import { firestore } from 'utilities/firebase';
-import { addDoc, collection, getDocs, Timestamp } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, Timestamp } from 'firebase/firestore';
 import { IBanco } from 'definitions/IBanco';
 import { IPrestamo } from 'definitions/IPrestamo';
 import { IPlainObject } from 'definitions/IPlainObjects';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { IEmpleado } from 'definitions/IEmpleado';
-
-const columns = [
-  {
-    name: 'Id',
-    selector: (row: { id: any }) => row.id,
-    sortable: true,
-  },
-  {
-    name: 'Empleado',
-    selector: (row: { empleado: any }) => row.empleado,
-    sortable: true,
-  },
-  {
-    name: 'Banco',
-    selector: (row: { banco: any }) => row.banco,
-    sortable: true,
-  },
-  {
-    name: 'Cuenta',
-    selector: (row: { cuenta: any }) => row.cuenta,
-    sortable: true,
-  },
-  {
-    name: 'Cuotas',
-    selector: (row: { cuota: any }) => row.cuota,
-    sortable: true,
-  },
-  {
-    name: 'Monto',
-    selector: (row: { monto: any }) => row.monto,
-    sortable: true,
-  },
-];
-
-const data = [
-  {
-    id: 1,
-    id_empleado: '2',
-    entidad: 'Banco Industrial',
-    cuotas: 12,
-    monto: 5000,
-  },
-];
 
 // const bancos = [
 //   { value: 'bi', label: 'Banco Industrial' },
@@ -63,9 +20,50 @@ const data = [
 // ];
 
 const Prestamos: React.FC<IPlainObject> = ({ bancos, prestamos, empleados }) => {
-  // const miFuncion = () => {
-  //   console.log('hola mundo');
-  // };
+  const columns = [
+    {
+      name: 'Id',
+      selector: (row: { id: any }) => row.id,
+      sortable: true,
+    },
+    {
+      name: 'Empleado',
+      selector: (row: { empleado: any }) => row.empleado,
+      sortable: true,
+    },
+    {
+      name: 'Banco',
+      selector: (row: { banco: any }) => row.banco,
+      sortable: true,
+    },
+    {
+      name: 'Cuenta',
+      selector: (row: { cuenta: any }) => row.cuenta,
+      sortable: true,
+    },
+    {
+      name: 'Cuotas',
+      selector: (row: { cuota: any }) => row.cuota,
+      sortable: true,
+    },
+    {
+      name: 'Monto',
+      selector: (row: { monto: any }) => row.monto,
+      sortable: true,
+    },
+    {
+      name: 'Actions',
+      cell: (row: { id: string }) => (
+        <Button status="Danger" onClick={() => eliminar(row.id)}>
+          Eliminar
+        </Button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ];
+
   const router = useRouter();
   const [formulario, setFormulario] = useState({
     empleado: '',
@@ -101,6 +99,17 @@ const Prestamos: React.FC<IPlainObject> = ({ bancos, prestamos, empleados }) => 
       router.reload();
     } catch (error) {
       console.error('Error al escribir el documento: ', error);
+    }
+  };
+
+  const eliminar = async (id: any) => {
+    console.log('idid', id);
+    try {
+      await deleteDoc(doc(firestore, 'prestamos', id));
+      console.log('Documento borrado correctamente. ID del documento: ', id);
+      router.reload();
+    } catch (error) {
+      console.error('Error al eleiminar el documento: ', error);
     }
   };
 

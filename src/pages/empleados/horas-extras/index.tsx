@@ -7,43 +7,45 @@ import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { useCallback, useMemo, useState } from 'react';
 import { IPlainObject } from 'definitions/IPlainObjects';
 import { useRouter } from 'next/router';
-import { Timestamp } from '@firebase/firestore';
+import { deleteDoc, doc, Timestamp } from '@firebase/firestore';
 import { IEmpleado } from 'definitions/IEmpleado';
 import TablaSelectable from 'components/TabaSelectable';
 
-const columns = [
-  {
-    name: 'Id',
-    selector: (row: { id: string }) => row.id,
-    sortable: true,
-  },
-  {
-    name: 'Empleado',
-    selector: (row: { empleado: string }) => row.empleado,
-    sortable: true,
-  },
-  // {
-  //   name: 'ID Autorizacion',
-  //   selector: (row: { id_autorizacion: any }) => row.id_autorizacion,
-  //   sortable: true,
-  // },
-  {
-    name: 'Fecha',
-    selector: (row: { fecha: string }) => row.fecha,
-    sortable: true,
-  },
-  {
-    name: 'Descripcion',
-    selector: (row: { descripcion: string }) => row.descripcion,
-    sortable: true,
-  },
-  {
-    name: 'Horas trabajadas',
-    selector: (row: { horas_trabajadas: string }) => row.horas_trabajadas,
-    sortable: true,
-  },
-];
 const HorasExtras: React.FC<IPlainObject> = ({ horas, empleados }) => {
+  const columns = [
+    {
+      name: 'Id',
+      selector: (row: { id: string }) => row.id,
+      sortable: true,
+    },
+    {
+      name: 'Empleado',
+      selector: (row: { empleado: string }) => row.empleado,
+      sortable: true,
+    },
+    {
+      name: 'Fecha',
+      selector: (row: { fecha: string }) => row.fecha,
+      sortable: true,
+    },
+    {
+      name: 'Descripcion',
+      selector: (row: { descripcion: string }) => row.descripcion,
+      sortable: true,
+    },
+    {
+      name: 'Actions',
+      cell: (row: { id: string }) => (
+        <Button status="Danger" onClick={() => eliminar(row.id)}>
+          Eliminar
+        </Button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ];
+
   const [fecha, setFecha] = useState(new Date());
   const [formulario, setFormulario] = useState({
     descripcion: '',
@@ -103,6 +105,18 @@ const HorasExtras: React.FC<IPlainObject> = ({ horas, empleados }) => {
       router.reload();
     } catch (error) {
       console.error('Error al escribir el documento: ', error);
+    }
+  };
+
+  const eliminar = async (id: any) => {
+    console.log('idid', id);
+    // return;
+    try {
+      await deleteDoc(doc(firestore, 'horas_extras', id));
+      console.log('Documento borrado correctamente. ID del documento: ', id);
+      router.reload();
+    } catch (error) {
+      console.error('Error al eleiminar el documento: ', error);
     }
   };
 
