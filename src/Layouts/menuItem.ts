@@ -55,7 +55,7 @@ const items: MenuItemType[] = [
     ],
   },
   {
-    title: 'Test',
+    title: 'Autenticacion',
     icon: { name: 'lock-outline' },
     children: [
       {

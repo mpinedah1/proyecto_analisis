@@ -1,56 +1,85 @@
-import { Card, CardBody, CardHeader, Col, Container, Row } from '@paljs/ui';
+// Packages
+import { useEffect, useState } from 'react';
+
+// Components
+import { Button, Card, CardBody, CardHeader, Col, Container, Row } from '@paljs/ui';
 import PrestamosForm from 'components/Empleados/prestamos';
 import Tabla from 'components/Tabla';
 import Layout from 'Layouts';
+import columns from './columnas';
+import CustomSpinner from 'components/CustomSpinner';
 
-const columns = [
-  {
-    name: 'Id',
-    selector: (row: { id: any }) => row.id,
-    sortable: true,
-  },
-  {
-    name: 'Id Empleado',
-    selector: (row: { id_empleado: any }) => row.id_empleado,
-    sortable: true,
-  },
-  {
-    name: 'Entidad',
-    selector: (row: { entidad: any }) => row.entidad,
-    sortable: true,
-  },
-  {
-    name: 'Cuotas',
-    selector: (row: { cuotas: any }) => row.cuotas,
-    sortable: true,
-  },
-  {
-    name: 'Monto',
-    selector: (row: { monto: any }) => row.monto,
-    sortable: true,
-  },
-];
+// Definitions
+import { IPrestamo } from 'definitions/IPrestamo';
+import { IPlainObject } from 'definitions/IPlainObjects';
 
-const data = [
-  {
-    id: 1,
-    id_empleado: '2',
-    entidad: 'Banco Industrial',
-    cuotas: 12,
-    monto: 5000,
-  },
-];
+// Hooks
+import { useFirestoreAddDocument } from 'hooks/useFirestoreAddDocument';
+import { useFirestoreDeleteDocument } from 'hooks/useFirestoreDeleteDocument';
+import { useFirestoreCollection } from 'hooks/useFirestoreCollection';
+import { useRouter } from 'next/router';
 
-const bancos = [
-  { value: 'bi', label: 'Banco Industrial' },
-  { value: 'banrural', label: 'Banrural' },
-  { value: 'bac', label: 'Bac' },
-];
+const Prestamos: React.FC<IPlainObject> = () => {
+  const [tablaColumnas, setTablaColumnas] = useState<any[]>([]);
+  const [formulario, setFormulario] = useState<IPrestamo>();
+  console.log('formulario', formulario);
+  const router = useRouter();
 
-const Prestamos = () => {
-  const miFuncion = () => {
-    console.log('hola mundo');
+  // Traer los registros de la coleccion 'prestamos' para imprimirlos en
+  const { data: dataPrestamos, loading: loadingPrestamos } = useFirestoreCollection('prestamos');
+
+  // Traer los registros de empleados y bancos para mostrarlos en el formulario
+  const { data: dataEmpleados, loading: loadingEmpleados } = useFirestoreCollection('empleados');
+  const { data: dataBancos, loading: loadingBancos } = useFirestoreCollection('bancos');
+
+  // Agregar Documento
+  const {
+    success: successAdd,
+    loading: isLoadingAdd,
+    handleSubmit: handleSubmitAddDocument,
+  } = useFirestoreAddDocument('prestamos', formulario);
+  // Borrar Documento
+  const { loading: isLoadingDelete, handleSubmit: handleSubmitDeleteDocument } =
+    useFirestoreDeleteDocument('prestamos');
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormulario({ ...formulario, [event.target.name]: event.target.value });
   };
+
+  const handleSelectChangeEmpleado = (event: any) => {
+    const empleado = event.label;
+    setFormulario({ ...formulario, empleado: empleado });
+  };
+
+  const handleSelectChangeBanco = (event: any) => {
+    const banco = event.label;
+    setFormulario({ ...formulario, banco: banco });
+  };
+
+  const insertarBotones = async () => {
+    const botones: any = {
+      name: 'Actions',
+      cell: (row: { id: string }) => (
+        <Button status="Danger" onClick={() => handleSubmitDeleteDocument(row.id)}>
+          Eliminar
+        </Button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    };
+    columns.push(botones);
+    setTablaColumnas(columns);
+  };
+
+  useEffect(() => {
+    insertarBotones();
+  }, [columns]);
+
+  useEffect(() => {
+    if (successAdd) router.reload();
+  }, [successAdd]);
+
   return (
     <Layout title={'Horas Extras'}>
       <Row>
@@ -60,20 +89,31 @@ const Prestamos = () => {
             <Card status="Primary">
               <CardHeader>Ingresar Prestamos</CardHeader>
               <CardBody>
-                <PrestamosForm handleSubmit={miFuncion} bancos={bancos} />
+                {!loadingEmpleados && !loadingBancos ? (
+                  <PrestamosForm
+                    bancos={dataBancos}
+                    empleados={dataEmpleados}
+                    handleSelectChangeEmpleado={handleSelectChangeEmpleado}
+                    handleSelectChangeBanco={handleSelectChangeBanco}
+                    handleChange={handleChange}
+                    handleSubmit={handleSubmitAddDocument}
+                    loading={isLoadingAdd}
+                  />
+                ) : (
+                  <CustomSpinner status="Primary" size="Large" padding />
+                )}
               </CardBody>
             </Card>
           </Container>
         </Col>
       </Row>
-
       <Row>
         <Col>
           <Container>
-            <Card status="Primary">
+            <Card status="Success">
               <CardHeader>Listado de Prestamos</CardHeader>
               <CardBody>
-                <Tabla columns={columns} data={data} />
+                <Tabla columns={tablaColumnas} data={dataPrestamos} loading={loadingPrestamos} />
               </CardBody>
             </Card>
           </Container>
