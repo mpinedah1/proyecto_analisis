@@ -4,76 +4,35 @@ import { IHoraExtra } from 'definitions/IHoraExtra';
 import Layout from 'Layouts';
 import { firestore } from 'utilities/firebase';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IPlainObject } from 'definitions/IPlainObjects';
 import { useRouter } from 'next/router';
 import { deleteDoc, doc, Timestamp } from '@firebase/firestore';
 import { IEmpleado } from 'definitions/IEmpleado';
 import TablaSelectable from 'components/TabaSelectable';
+import columns from './columns';
+import Tabla from 'components/Tabla';
+import { useFirestoreAddDocument } from 'hooks/useFirestoreAddDocument';
+import { useFirestoreCollection } from 'hooks/useFirestoreCollection';
+import { useFirestoreDeleteDocument } from 'hooks/useFirestoreDeleteDocument';
 
-const HorasExtras: React.FC<IPlainObject> = ({ horas, empleados }) => {
-  const columns = [
-    {
-      name: 'Id',
-      selector: (row: { id: string }) => row.id,
-      sortable: true,
-    },
-    {
-      name: 'Empleado',
-      selector: (row: { empleado: string }) => row.empleado,
-      sortable: true,
-    },
-    {
-      name: 'Fecha',
-      selector: (row: { fecha: string }) => row.fecha,
-      sortable: true,
-    },
-    {
-      name: 'Descripcion',
-      selector: (row: { descripcion: string }) => row.descripcion,
-      sortable: true,
-    },
-    {
-      name: 'Actions',
-      cell: (row: { id: string }) => (
-        <Button status="Danger" onClick={() => eliminar(row.id)}>
-          Eliminar
-        </Button>
-      ),
-      ignoreRowClick: true,
-      allowOverflow: true,
-      button: true,
-    },
-  ];
-
+const HorasExtras: React.FC<IPlainObject> = () => {
+  const [tablaColumnas, setTablaColumnas] = useState<any[]>([]);
   const [fecha, setFecha] = useState(new Date());
-  const [formulario, setFormulario] = useState({
-    descripcion: '',
-    horas_trabajadas: '',
-    fecha: '',
-    empleado: '',
-  });
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [toggleCleared, setToggleCleared] = useState(false);
+  const [formulario, setFormulario] = useState<IHoraExtra>();
 
-  const handleRowSelected = useCallback((state) => {
-    setSelectedRows(state.selectedRows);
-  }, []);
+  const { data: dataHorasExtras, loading: loadingHorasExtras } = useFirestoreCollection('horas_extras');
+  const { data: dataEmpleados, loading: loadingEmpleados } = useFirestoreCollection('empleados');
 
-  const contextActions = useMemo(() => {
-    const handleDelete = () => {
-      // if (window.confirm(`Are you sure you want to delete:\r ${selectedRows.map((r: any) => r.title)}?`)) {
-      // 	setToggleCleared(!toggleCleared);
-      // 	setData(differenceBy(data, selectedRows, 'title'));
-      // }
-    };
+  const {
+    success: successAdd,
+    loading: isLoadingAdd,
+    handleSubmit: handleSubmitAddDocument,
+  } = useFirestoreAddDocument('horas_extras', formulario);
 
-    return (
-      <Button key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }}>
-        Delete
-      </Button>
-    );
-  }, [selectedRows, toggleCleared]);
+  // Borrar Documento
+  const { loading: isLoadingDelete, handleSubmit: handleSubmitDeleteDocument } =
+    useFirestoreDeleteDocument('horas_extras');
 
   const router = useRouter();
 
@@ -93,32 +52,57 @@ const HorasExtras: React.FC<IPlainObject> = ({ horas, empleados }) => {
     setFecha(fech);
   };
 
-  const handleSubmit = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    console.log('formulario', formulario);
-    try {
-      const docRef = await addDoc(collection(firestore, 'horas_extras'), {
-        ...formulario,
-        fecha: Timestamp.fromDate(fecha),
-      });
-      console.log('Documento escrito correctamente. ID del documento:', docRef.id);
-      router.reload();
-    } catch (error) {
-      console.error('Error al escribir el documento: ', error);
-    }
+  // const handleSubmit = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   event.preventDefault();
+  //   console.log('formulario', formulario);
+  //   try {
+  //     const docRef = await addDoc(collection(firestore, 'horas_extras'), {
+  //       ...formulario,
+  //       fecha: Timestamp.fromDate(fecha),
+  //     });
+  //     console.log('Documento escrito correctamente. ID del documento:', docRef.id);
+  //     router.reload();
+  //   } catch (error) {
+  //     console.error('Error al escribir el documento: ', error);
+  //   }
+  // };
+
+  // const { data, loading, errorAdd, handleSubmitAdd } = useFirestoreAddDocument(
+  //   "horas_extras",
+  //   { ...formulario, fecha: Timestamp.fromDate(fecha) }
+  // );
+
+  // const eliminar = async (id: any) => {
+  //   console.log('idid', id);
+  //   // return;
+  //   try {
+  //     await deleteDoc(doc(firestore, 'horas_extras', id));
+  //     console.log('Documento borrado correctamente. ID del documento: ', id);
+  //     router.reload();
+  //   } catch (error) {
+  //     console.error('Error al eleiminar el documento: ', error);
+  //   }
+  // };
+
+  const insertarBotones = async () => {
+    const botones: any = {
+      name: 'Actions',
+      cell: (row: { id: string }) => (
+        <Button status="Danger" onClick={() => handleSubmitDeleteDocument(row.id)}>
+          Eliminar
+        </Button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    };
+    columns.push(botones);
+    setTablaColumnas(columns);
   };
 
-  const eliminar = async (id: any) => {
-    console.log('idid', id);
-    // return;
-    try {
-      await deleteDoc(doc(firestore, 'horas_extras', id));
-      console.log('Documento borrado correctamente. ID del documento: ', id);
-      router.reload();
-    } catch (error) {
-      console.error('Error al eleiminar el documento: ', error);
-    }
-  };
+  useEffect(() => {
+    insertarBotones();
+  }, []);
 
   return (
     <Layout title={'Horas Extras'}>
@@ -130,8 +114,8 @@ const HorasExtras: React.FC<IPlainObject> = ({ horas, empleados }) => {
               <CardHeader>Ingresar Horas Extras</CardHeader>
               <CardBody>
                 <HorasExtrasForm
-                  empleados={empleados}
-                  handleSubmit={handleSubmit}
+                  empleados={dataEmpleados}
+                  handleSubmit={handleSubmitAddDocument}
                   handleChange={handleChange}
                   handleFechaChange={handleFechaChange}
                   handleSelectChange={handleSelectChange}
@@ -148,13 +132,7 @@ const HorasExtras: React.FC<IPlainObject> = ({ horas, empleados }) => {
             <Card status="Success">
               <CardHeader>Listado Horas Extras</CardHeader>
               <CardBody>
-                <TablaSelectable
-                  columns={columns}
-                  data={horas}
-                  onSelectedRowsChange={handleRowSelected}
-                  contextActions={contextActions}
-                  toggleCleared={toggleCleared}
-                />
+                <Tabla columns={tablaColumnas} data={dataHorasExtras} />
               </CardBody>
             </Card>
           </Container>
@@ -164,41 +142,41 @@ const HorasExtras: React.FC<IPlainObject> = ({ horas, empleados }) => {
   );
 };
 
-export async function getStaticProps() {
-  const empleados: IEmpleado[] = [];
-  const horas: IHoraExtra[] = [];
+// export async function getStaticProps() {
+//   const empleados: IEmpleado[] = [];
+//   const horas: IHoraExtra[] = [];
 
-  try {
-    const querySnapshot = await getDocs(collection(firestore, 'horas_extras'));
-    querySnapshot.forEach((doc) => {
-      const hora_extra: IHoraExtra = {
-        id: doc.id,
-        descripcion: doc.data().descripcion,
-        horas_trabajadas: doc.data().horas_trabajadas,
-        fecha: doc.data().fecha.toDate().toISOString(),
-        empleado: doc.data().empleado || '',
-      };
-      horas.push(hora_extra);
-    });
-  } catch (error) {
-    console.error('Error al leer la colección horas extras ', error);
-  }
+//   try {
+//     const querySnapshot = await getDocs(collection(firestore, 'horas_extras'));
+//     querySnapshot.forEach((doc) => {
+//       const hora_extra: IHoraExtra = {
+//         id: doc.id,
+//         descripcion: doc.data().descripcion,
+//         horas_trabajadas: doc.data().horas_trabajadas,
+//         fecha: doc.data().fecha.toDate().toISOString(),
+//         empleado: doc.data().empleado || '',
+//       };
+//       horas.push(hora_extra);
+//     });
+//   } catch (error) {
+//     console.error('Error al leer la colección horas extras ', error);
+//   }
 
-  try {
-    const querySnapshot = await getDocs(collection(firestore, 'empleados'));
-    querySnapshot.forEach((doc) => {
-      const empleado: IEmpleado = {
-        id: doc.id,
-        nombres: doc.data().nombres,
-        apellidos: doc.data().apellidos,
-      };
-      empleados.push(empleado);
-    });
-  } catch (error) {
-    console.error('Error al leer la colección empleados', error);
-  }
+//   try {
+//     const querySnapshot = await getDocs(collection(firestore, 'empleados'));
+//     querySnapshot.forEach((doc) => {
+//       const empleado: IEmpleado = {
+//         id: doc.id,
+//         nombres: doc.data().nombres,
+//         apellidos: doc.data().apellidos,
+//       };
+//       empleados.push(empleado);
+//     });
+//   } catch (error) {
+//     console.error('Error al leer la colección empleados', error);
+//   }
 
-  return { props: { horas, empleados } };
-}
+//   return { props: { horas, empleados } };
+// }
 
 export default HorasExtras;

@@ -1,80 +1,48 @@
+// Packages
+import { useEffect, useState } from 'react';
+
+// Components
 import { Button, Card, CardBody, CardHeader, Col, Container, Row } from '@paljs/ui';
 import PrestamosForm from 'components/Empleados/prestamos';
 import Tabla from 'components/Tabla';
 import Layout from 'Layouts';
+import columns from './columnas';
+import CustomSpinner from 'components/CustomSpinner';
 
-//firebase
-import { firestore } from 'utilities/firebase';
-import { addDoc, collection, deleteDoc, doc, getDocs, Timestamp } from 'firebase/firestore';
-import { IBanco } from 'definitions/IBanco';
+// Definitions
 import { IPrestamo } from 'definitions/IPrestamo';
 import { IPlainObject } from 'definitions/IPlainObjects';
-import { useState } from 'react';
+
+// Hooks
+import { useFirestoreAddDocument } from 'hooks/useFirestoreAddDocument';
+import { useFirestoreDeleteDocument } from 'hooks/useFirestoreDeleteDocument';
+import { useFirestoreCollection } from 'hooks/useFirestoreCollection';
 import { useRouter } from 'next/router';
-import { IEmpleado } from 'definitions/IEmpleado';
 
-// const bancos = [
-//   { value: 'bi', label: 'Banco Industrial' },
-//   { value: 'banrural', label: 'Banrural' },
-//   { value: 'bac', label: 'Bac' },
-// ];
-
-const Prestamos: React.FC<IPlainObject> = ({ bancos, prestamos, empleados }) => {
-  const columns = [
-    {
-      name: 'Id',
-      selector: (row: { id: any }) => row.id,
-      sortable: true,
-    },
-    {
-      name: 'Empleado',
-      selector: (row: { empleado: any }) => row.empleado,
-      sortable: true,
-    },
-    {
-      name: 'Banco',
-      selector: (row: { banco: any }) => row.banco,
-      sortable: true,
-    },
-    {
-      name: 'Cuenta',
-      selector: (row: { cuenta: any }) => row.cuenta,
-      sortable: true,
-    },
-    {
-      name: 'Cuotas',
-      selector: (row: { cuota: any }) => row.cuota,
-      sortable: true,
-    },
-    {
-      name: 'Monto',
-      selector: (row: { monto: any }) => row.monto,
-      sortable: true,
-    },
-    {
-      name: 'Actions',
-      cell: (row: { id: string }) => (
-        <Button status="Danger" onClick={() => eliminar(row.id)}>
-          Eliminar
-        </Button>
-      ),
-      ignoreRowClick: true,
-      allowOverflow: true,
-      button: true,
-    },
-  ];
-
+const Prestamos: React.FC<IPlainObject> = () => {
+  const [tablaColumnas, setTablaColumnas] = useState<any[]>([]);
+  const [formulario, setFormulario] = useState<IPrestamo>();
+  console.log('formulario', formulario);
   const router = useRouter();
-  const [formulario, setFormulario] = useState({
-    empleado: '',
-    banco: '',
-    cuenta: '',
-    monto: '',
-    cuota: '',
-  });
+
+  // Traer los registros de la coleccion 'prestamos' para imprimirlos en
+  const { data: dataPrestamos, loading: loadingPrestamos } = useFirestoreCollection('prestamos');
+
+  // Traer los registros de empleados y bancos para mostrarlos en el formulario
+  const { data: dataEmpleados, loading: loadingEmpleados } = useFirestoreCollection('empleados');
+  const { data: dataBancos, loading: loadingBancos } = useFirestoreCollection('bancos');
+
+  // Agregar Documento
+  const {
+    success: successAdd,
+    loading: isLoadingAdd,
+    handleSubmit: handleSubmitAddDocument,
+  } = useFirestoreAddDocument('prestamos', formulario);
+  // Borrar Documento
+  const { loading: isLoadingDelete, handleSubmit: handleSubmitDeleteDocument } =
+    useFirestoreDeleteDocument('prestamos');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('event', event);
     setFormulario({ ...formulario, [event.target.name]: event.target.value });
   };
 
@@ -88,30 +56,29 @@ const Prestamos: React.FC<IPlainObject> = ({ bancos, prestamos, empleados }) => 
     setFormulario({ ...formulario, banco: banco });
   };
 
-  const handleSubmit = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    console.log('formulario', formulario);
-    try {
-      const docRef = await addDoc(collection(firestore, 'prestamos'), {
-        ...formulario,
-      });
-      console.log('Documento escrito correctamente. ID del documento:', docRef.id);
-      router.reload();
-    } catch (error) {
-      console.error('Error al escribir el documento: ', error);
-    }
+  const insertarBotones = async () => {
+    const botones: any = {
+      name: 'Actions',
+      cell: (row: { id: string }) => (
+        <Button status="Danger" onClick={() => handleSubmitDeleteDocument(row.id)}>
+          Eliminar
+        </Button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    };
+    columns.push(botones);
+    setTablaColumnas(columns);
   };
 
-  const eliminar = async (id: any) => {
-    console.log('idid', id);
-    try {
-      await deleteDoc(doc(firestore, 'prestamos', id));
-      console.log('Documento borrado correctamente. ID del documento: ', id);
-      router.reload();
-    } catch (error) {
-      console.error('Error al eleiminar el documento: ', error);
-    }
-  };
+  useEffect(() => {
+    insertarBotones();
+  }, [columns]);
+
+  useEffect(() => {
+    if (successAdd) router.reload();
+  }, [successAdd]);
 
   return (
     <Layout title={'Horas Extras'}>
@@ -122,27 +89,31 @@ const Prestamos: React.FC<IPlainObject> = ({ bancos, prestamos, empleados }) => 
             <Card status="Primary">
               <CardHeader>Ingresar Prestamos</CardHeader>
               <CardBody>
-                <PrestamosForm
-                  handleSubmit={handleSubmit}
-                  bancos={bancos}
-                  empleados={empleados}
-                  handleSelectChangeEmpleado={handleSelectChangeEmpleado}
-                  handleSelectChangeBanco={handleSelectChangeBanco}
-                  handleChange={handleChange}
-                />
+                {!loadingEmpleados && !loadingBancos ? (
+                  <PrestamosForm
+                    bancos={dataBancos}
+                    empleados={dataEmpleados}
+                    handleSelectChangeEmpleado={handleSelectChangeEmpleado}
+                    handleSelectChangeBanco={handleSelectChangeBanco}
+                    handleChange={handleChange}
+                    handleSubmit={handleSubmitAddDocument}
+                    loading={isLoadingAdd}
+                  />
+                ) : (
+                  <CustomSpinner status="Primary" size="Large" padding />
+                )}
               </CardBody>
             </Card>
           </Container>
         </Col>
       </Row>
-
       <Row>
         <Col>
           <Container>
             <Card status="Success">
               <CardHeader>Listado de Prestamos</CardHeader>
               <CardBody>
-                <Tabla columns={columns} data={prestamos} />
+                <Tabla columns={tablaColumnas} data={dataPrestamos} loading={loadingPrestamos} />
               </CardBody>
             </Card>
           </Container>
@@ -151,57 +122,5 @@ const Prestamos: React.FC<IPlainObject> = ({ bancos, prestamos, empleados }) => 
     </Layout>
   );
 };
-
-export async function getStaticProps() {
-  const bancos: IBanco[] = [];
-  const prestamos: IPrestamo[] = [];
-  const empleados: IEmpleado[] = [];
-  try {
-    const querySnapshot = await getDocs(collection(firestore, 'bancos'));
-    querySnapshot.forEach((doc) => {
-      const banco: IBanco = {
-        id: doc.id,
-        nombre: doc.data().nombre,
-        descripcion: doc.data().descripcion,
-      };
-      bancos.push(banco);
-    });
-  } catch (error) {
-    console.error('Error al leer la colección bancos ', error);
-  }
-
-  try {
-    const querySnapshot = await getDocs(collection(firestore, 'prestamos'));
-    querySnapshot.forEach((doc) => {
-      const prestamo: IPrestamo = {
-        id: doc.id,
-        banco: doc.data().banco,
-        empleado: doc.data().empleado,
-        cuota: doc.data().cuota,
-        cuenta: doc.data().cuenta,
-        monto: doc.data().monto,
-      };
-      prestamos.push(prestamo);
-    });
-  } catch (error) {
-    console.error('Error al leer la colección prestamos ', error);
-  }
-
-  try {
-    const querySnapshot = await getDocs(collection(firestore, 'empleados'));
-    querySnapshot.forEach((doc) => {
-      const empleado: IEmpleado = {
-        id: doc.id,
-        nombres: doc.data().nombres,
-        apellidos: doc.data().apellidos,
-      };
-      empleados.push(empleado);
-    });
-  } catch (error) {
-    console.error('Error al leer la colección empleados', error);
-  }
-
-  return { props: { bancos, prestamos, empleados } };
-}
 
 export default Prestamos;

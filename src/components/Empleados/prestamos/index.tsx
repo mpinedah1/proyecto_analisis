@@ -1,4 +1,5 @@
 import { Button, Col, Row, Select } from '@paljs/ui';
+import CustomSpinner from 'components/CustomSpinner';
 import { IBanco } from 'definitions/IBanco';
 import { IEmpleado } from 'definitions/IEmpleado';
 import { IPlainObject } from 'definitions/IPlainObjects';
@@ -12,6 +13,7 @@ const PrestamosForm: React.FC<IPlainObject> = ({
   empleados,
   handleSelectChangeEmpleado,
   handleSelectChangeBanco,
+  loading,
 }) => {
   const [dataEmpleados, setDataEmpleados] = useState<any[]>([]);
   const [dataBancos, setDataBancos] = useState<any[]>([]);
@@ -69,22 +71,25 @@ const PrestamosForm: React.FC<IPlainObject> = ({
         </Col>
         <Col breakPoint={{ xs: 12, sm: 4 }}>
           <InputWrap fullWidth size="Medium">
-            <input type="number" name="cuenta" onChange={handleChange} placeholder="Cuenta" />
+            <input type="number" name="cuenta" onChange={handleChange} placeholder="Cuenta" required />
           </InputWrap>
         </Col>
         <Col breakPoint={{ xs: 12, sm: 4 }}>
           <InputWrap fullWidth size="Medium">
-            <input type="number" name="cuota" onChange={handleChange} placeholder="Cuotas" />
+            <input type="number" name="cuota" onChange={handleChange} placeholder="Cuotas" required />
           </InputWrap>
         </Col>
         <Col breakPoint={{ xs: 12, sm: 4 }}>
           <InputWrap fullWidth size="Medium">
-            <input type="number" name="monto" onChange={handleChange} placeholder="Monto" />
+            <input type="number" name="monto" onChange={handleChange} placeholder="Monto" required />
           </InputWrap>
         </Col>
       </Row>
       <ButtonWrap align={'end'}>
-        <Button type="submit">Guardar</Button>
+        <Button type="submit" style={{ position: 'relative' }}>
+          Guardar
+          {loading && <CustomSpinner status="Primary" size="Small" />}
+        </Button>
       </ButtonWrap>
     </form>
   );
