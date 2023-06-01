@@ -59,6 +59,7 @@ const items: MenuItemType[] = [
       {
         title: 'Ausencias',
         link: { href: '/empleados/ausencias' },
+      },
       {
         title: 'Nominas',
         link: { href: '/empleados/nominas' },
@@ -74,6 +75,14 @@ const items: MenuItemType[] = [
       {
         title: 'Tipo Ausencia',
         link: { href: '/empleados/tipoausencia' },
+      },
+      {
+        title: 'Liquidaciones',
+        link: { href: '/empleados/liquidaciones' },
+      },
+      {
+        title: 'Empleados',
+        link: { href: '/empleados/empleado' },
       },
     ],
   },
