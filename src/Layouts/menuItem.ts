@@ -59,6 +59,21 @@ const items: MenuItemType[] = [
       {
         title: 'Ausencias',
         link: { href: '/empleados/ausencias' },
+      {
+        title: 'Nominas',
+        link: { href: '/empleados/nominas' },
+      },
+      {
+        title: 'Salarios',
+        link: { href: '/empleados/salarios' },
+      },
+      {
+        title: 'Comisiones',
+        link: { href: '/empleados/comisiones' },
+      },
+      {
+        title: 'Tipo Ausencia',
+        link: { href: '/empleados/tipoausencia' },
       },
     ],
   },
