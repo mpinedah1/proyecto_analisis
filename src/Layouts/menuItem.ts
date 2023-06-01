@@ -7,6 +7,20 @@ const items: MenuItemType[] = [
     link: { href: '/dashboard' },
   },
   {
+    title: 'Autenticacion',
+    icon: { name: 'lock-outline' },
+    children: [
+      {
+        title: 'Login',
+        link: { href: '/auth/login' },
+      },
+      {
+        title: 'Register',
+        link: { href: '/auth/register' },
+      },
+    ],
+  },
+  {
     title: 'Catalogos',
     icon: { name: 'arrowhead-right-outline' },
     children: [
@@ -59,6 +73,7 @@ const items: MenuItemType[] = [
       {
         title: 'Ausencias',
         link: { href: '/empleados/ausencias' },
+      },
       {
         title: 'Nominas',
         link: { href: '/empleados/nominas' },
@@ -74,16 +89,6 @@ const items: MenuItemType[] = [
       {
         title: 'Tipo Ausencia',
         link: { href: '/empleados/tipoausencia' },
-      },
-    ],
-  },
-  {
-    title: 'Autenticacion',
-    icon: { name: 'lock-outline' },
-    children: [
-      {
-        title: 'Login',
-        link: { href: '/auth/login' },
       },
     ],
   },
