@@ -6,7 +6,10 @@ import Link from 'next/link';
 import Auth from 'components/Auth';
 import Layout from 'Layouts';
 import { collection, getDocs, where, query } from 'firebase/firestore';
-import { firestore } from 'utilities/firebase'; // Ajusta la ruta según la ubicación real del archivo firebase.ts
+import { firestore } from 'utilities/firebase';
+
+// Importa tu imagen desde un archivo
+import logoImage from 'logo-umg.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -47,6 +50,9 @@ const Login = () => {
 
   return (
     <Layout title="Seguridad 101">
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <img src={logoImage.src} alt="Logo" />
+      </div>
       <Auth title="Ingrese sus Credenciales" subTitle="Solo Personal Autorizado Nomina">
         <form onSubmit={handleSubmit}>
           <InputGroup fullWidth>
