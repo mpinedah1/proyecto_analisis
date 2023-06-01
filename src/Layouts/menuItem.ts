@@ -53,6 +53,13 @@ const items: MenuItemType[] = [
         link: { href: '/empleados/usuario' },
       },
       {
+        title: 'Vacaciones',
+        link: { href: '/empleados/vacaciones' },
+      },
+      {
+        title: 'Ausencias',
+        link: { href: '/empleados/ausencias' },
+      {
         title: 'Nominas',
         link: { href: '/empleados/nominas' },
       },
