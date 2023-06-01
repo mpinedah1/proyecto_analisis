@@ -10,6 +10,11 @@ const columns = [
     sortable: true,
   },
   {
+    name: 'Nombre',
+    selector: (row: { nombre: any }) => row.nombre,
+    sortable: true,
+  },
+  {
     name: 'Descripcion',
     selector: (row: { descripcion: any }) => row.descripcion,
     sortable: true,

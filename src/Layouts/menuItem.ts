@@ -18,6 +18,10 @@ const items: MenuItemType[] = [
         title: 'Register',
         link: { href: '/auth/register' },
       },
+      {
+        title: 'Mantenimiento',
+        link: { href: '/auth/mantenimiento' },
+      },
     ],
   },
   {
@@ -89,6 +93,16 @@ const items: MenuItemType[] = [
       {
         title: 'Tipo Ausencia',
         link: { href: '/empleados/tipoausencia' },
+      },
+    ],
+  },
+  {
+    title: 'Reportes',
+    icon: { name: 'arrowhead-right-outline' },
+    children: [
+      {
+        title: 'Pagos',
+        link: { href: '/reportes/pagos' },
       },
     ],
   },

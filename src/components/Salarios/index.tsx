@@ -53,6 +53,11 @@ const SalariosForm: React.FC<IPlainObject> = ({
         </Col>
         <Col breakPoint={{ xs: 12, sm: 6 }}>
           <InputWrap fullWidth size="Medium">
+            <input type="text" placeholder="Nombre" name="nombre" onChange={handleChange} required />
+          </InputWrap>
+        </Col>
+        <Col breakPoint={{ xs: 12, sm: 6 }}>
+          <InputWrap fullWidth size="Medium">
             <input type="text" placeholder="Descripcion" name="descripcion" onChange={handleChange} required />
           </InputWrap>
         </Col>
