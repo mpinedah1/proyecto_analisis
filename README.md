@@ -36,3 +36,4 @@ Links para documentacion de librerias
  - [paljs ui](https://paljs.com/ui/components/card)
  - [getbootstrap](https://getbootstrap.com/docs/5.3/getting-started/introduction/)
  - [eva-icons](https://akveo.github.io/eva-icons)
+"# proyecto_analisis" 
