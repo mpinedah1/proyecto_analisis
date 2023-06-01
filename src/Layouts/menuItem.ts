@@ -7,6 +7,24 @@ const items: MenuItemType[] = [
     link: { href: '/dashboard' },
   },
   {
+    title: 'Autenticacion',
+    icon: { name: 'lock-outline' },
+    children: [
+      {
+        title: 'Login',
+        link: { href: '/auth/login' },
+      },
+      {
+        title: 'Register',
+        link: { href: '/auth/register' },
+      },
+      {
+        title: 'Mantenimiento',
+        link: { href: '/auth/mantenimiento' },
+      },
+    ],
+  },
+  {
     title: 'Catalogos',
     icon: { name: 'arrowhead-right-outline' },
     children: [
@@ -87,12 +105,12 @@ const items: MenuItemType[] = [
     ],
   },
   {
-    title: 'Autenticacion',
-    icon: { name: 'lock-outline' },
+    title: 'Reportes',
+    icon: { name: 'arrowhead-right-outline' },
     children: [
       {
-        title: 'Login',
-        link: { href: '/auth/login' },
+        title: 'Pagos',
+        link: { href: '/reportes/pagos' },
       },
     ],
   },

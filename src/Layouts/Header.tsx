@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import styled, { DefaultTheme } from 'styled-components';
+import styled from 'styled-components';
 import { LayoutHeader } from '@paljs/ui/Layout';
 import { Actions } from '@paljs/ui/Actions';
 import ContextMenu from '@paljs/ui/ContextMenu';
@@ -17,11 +17,6 @@ const HeaderStyle = styled.div`
       display: none;
     }
   `}
-  .right > div {
-    height: auto;
-    display: flex;
-    align-content: center;
-  }
   .logo {
     font-size: 1.25rem;
     white-space: nowrap;
@@ -37,18 +32,17 @@ const HeaderStyle = styled.div`
   }
 `;
 
-interface HeaderProps {
-  toggleSidebar: () => void;
-  theme: {
-    set: (value: DefaultTheme['name']) => void;
-    value: DefaultTheme['name'];
-  };
-  changeDir: () => void;
-  dir: 'rtl' | 'ltr';
-}
-
-const Header: React.FC<HeaderProps> = (props) => {
+const Header = () => {
   const router = useRouter();
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('email');
+    if (storedEmail) {
+      setEmail(storedEmail);
+    }
+  }, []);
+
   return (
     <LayoutHeader fixed>
       <HeaderStyle>
@@ -58,13 +52,13 @@ const Header: React.FC<HeaderProps> = (props) => {
             {
               icon: { name: 'menu-outline' },
               url: {
-                onClick: props.toggleSidebar,
+                onClick: () => {},
               },
             },
             {
               content: (
                 <Link href="/">
-                  <a className="logo">Sistema Nomina</a>
+                  <a className="logo">Sistema Nómina</a>
                 </Link>
               ),
             },
@@ -87,7 +81,7 @@ const Header: React.FC<HeaderProps> = (props) => {
                   ]}
                   Link={Link}
                 >
-                  <User image="url('/icons/icon-72x72.png')" name="Nombre Usuario" title="Admin" size="Medium" />
+                  <User image="url('/icons/icon-72x72.png')" name={email} title="Admin" size="Medium" />
                 </ContextMenu>
               ),
             },
@@ -97,4 +91,5 @@ const Header: React.FC<HeaderProps> = (props) => {
     </LayoutHeader>
   );
 };
+
 export default Header;
